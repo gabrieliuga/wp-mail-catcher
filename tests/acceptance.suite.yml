@@ -9,8 +9,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - WPDb
-#        - WPWebDriver
-        - WPBrowser
+        - WPWebDriver
         - \Helper\Acceptance
     config:
         WPDb:
@@ -21,20 +20,15 @@ modules:
             #import the dump before the tests; this means the test site database will be repopulated before the tests.
             populate: true
             # re-import the dump between tests; this means the test site database will be repopulated between the tests.
-            cleanup: true
+            cleanup: true`
             waitlock: 10
             url: '%TEST_SITE_WP_URL%'
             urlReplacement: true #replace the hardcoded dump URL with the one above
             tablePrefix: '%TEST_SITE_TABLE_PREFIX%'
-#        WPWebDriver:
-#            url: '%TEST_SITE_WP_URL%'
-#            browser: 'chrome'
-#            port: 9515
-#            adminUsername: '%TEST_SITE_ADMIN_USERNAME%'
-#            adminPassword: '%TEST_SITE_ADMIN_PASSWORD%'
-#            adminPath: '%TEST_SITE_WP_ADMIN_PATH%'
-        WPBrowser:
+        WPWebDriver:
             url: '%TEST_SITE_WP_URL%'
+            browser: phantomjs
+            port: 4444
             adminUsername: '%TEST_SITE_ADMIN_USERNAME%'
             adminPassword: '%TEST_SITE_ADMIN_PASSWORD%'
             adminPath: '%TEST_SITE_WP_ADMIN_PATH%'
