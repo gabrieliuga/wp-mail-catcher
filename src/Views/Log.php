@@ -33,7 +33,7 @@ $logs->prepare_items();
         <?php endif; ?>
 
         <div class="button-container">
-            <button class="btn button-primary" data-toggle="modal" data-target="#new-message">
+            <button class="btn button-primary" data-toggle="modal" data-target="#new-message" data-codeception="new-message-modal-btn">
                 <?php _e('New Message', 'WpMailCatcher'); ?>
             </button>
 

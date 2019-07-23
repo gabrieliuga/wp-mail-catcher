@@ -1,6 +1,6 @@
 <?php use WpMailCatcher\GeneralHelper; ?>
 
-<div id="new-message" class="modal">
+<div id="new-message" class="modal" data-codeception="new-message-modal-body">
     <div class="modal-content">
         <form class="form-horizontal" action="?page=<?php echo GeneralHelper::$adminPageSlug; ?>&action=new_mail"
               method="POST">
@@ -21,7 +21,7 @@
                                         <span class="dashicons dashicons-dismiss -icon"></span>
                                     </a>
 
-                                    <select name="header_keys[]" class="field -select">
+                                    <select name="header_keys[]" class="field -select" data-codeception="header-select">
                                         <option value="to"><?php _e('To', 'WpMailCatcher'); ?></option>
                                         <option value="cc"><?php _e('Cc', 'WpMailCatcher'); ?></option>
                                         <option value="bcc"><?php _e('Bcc', 'WpMailCatcher'); ?></option>
@@ -29,13 +29,14 @@
                                         <option value="custom"><?php _e('Custom', 'WpMailCatcher'); ?></option>
                                     </select>
 
-                                    <input name="header_values[]" type="text" class="field -input"/>
+                                    <input name="header_values[]" type="text" class="field -input" data-codeception="header-input" />
                                 </div>
                             </div>
 
-                            <label class="is-html-email"><input type="checkbox" value="Content-Type: text/html"
-                                                                name="header_keys[]"/>
-                                Is HTML email? </label>
+                            <label class="is-html-email">
+                                <input type="checkbox" value="Content-Type: text/html" name="header_keys[]"/>
+                                Is HTML email?
+                            </label>
                         </div>
                         <div>
                             <h2><?php _e('Subject', 'WpMailCatcher'); ?></h2>
