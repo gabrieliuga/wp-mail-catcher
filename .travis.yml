@@ -22,10 +22,11 @@ matrix:
       env: WP_VERSION=latest
     - php: 5.6
       env: WP_VERSION=trunk
-install:
+before_install:
   - npm install grunt-cli -g
+install:
+  - cd ./build/grunt && npm run install
 script:
-  - cd build/grunt && npm run install
-  - cd build/grunt && grunt build
+  - cd ./build/grunt && grunt build
   - phantomjs --webdriver=4444
   - php vendor/bin/codecept run
