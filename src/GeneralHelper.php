@@ -6,6 +6,7 @@ class GeneralHelper
 {
     static public $csvItemDelimiter = ' | ';
     static public $logsPerPage = 5;
+    static public $adminPageSlug = 'wp-mail-catcher';
     static public $pluginPath;
     static public $pluginUrl;
     static public $pluginVersion;
@@ -13,7 +14,6 @@ class GeneralHelper
     static public $csvExportLegalColumns;
     static public $csvExportFileName;
     static public $adminUrl;
-    static public $adminPageSlug;
     static public $uploadsFolderInfo;
     static public $pluginAssetsUrl;
     static public $pluginViewDirectory;
@@ -44,7 +44,6 @@ class GeneralHelper
         self::$pluginPath = __DIR__ . '/..';
         self::$pluginMainPhpFile = self::$pluginPath . '/WpMailCatcher.php';
         self::$pluginUrl = plugins_url('..', self::$pluginPath);
-        self::$adminPageSlug = 'wp-mail-catcher';
         self::$uploadsFolderInfo = wp_upload_dir();
         self::$pluginAssetsUrl = self::$pluginUrl . '/assets';
         self::$pluginViewDirectory = __DIR__ . '/Views';

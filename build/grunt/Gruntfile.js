@@ -102,4 +102,5 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-postcss');
 
 	grunt.registerTask('default', ['concat', 'uglify', 'sass', 'postcss', 'clean', 'watch']);
+	grunt.registerTask('build', ['concat', 'uglify', 'sass', 'postcss', 'clean']);
 };
