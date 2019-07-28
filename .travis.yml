@@ -24,6 +24,7 @@ matrix:
       env: WP_VERSION=trunk
 before_install:
   - npm install grunt-cli -g
+  - npm install sass -g
 install:
   - cd build/grunt && npm install && grunt build
   - composer install
