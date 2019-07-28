@@ -27,7 +27,8 @@ before_install:
   - npm install sass -g
 install:
   - npm install build/grunt
-  - grunt --gruntfile build/grunt/Gruntfile.js
+  - ls
+  - grunt build --gruntfile build/grunt/Gruntfile.js
   - composer install
 script:
   - phantomjs --webdriver=4444 &
