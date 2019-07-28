@@ -100,8 +100,8 @@ before_script:
   # build Codeception modules
   - codecept build
 script:
-  - cat /etc/nginx/sites-available/$WP_DOMAIN
+#  - cat /etc/nginx/sites-available/$WP_DOMAIN
 #  - phantomjs --webdriver=4444 &
-  - ls $WP_FOLDER
-  - wget http://wordpress.local && cat index.html
-#  - codecept run acceptance --debug -v
+#  - ls $WP_FOLDER
+#  - wget http://wordpress.local && cat index.html
+  - codecept run acceptance --debug -v
