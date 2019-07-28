@@ -24,8 +24,8 @@ matrix:
       env: WP_VERSION=trunk
 before_install:
   - npm install grunt-cli -g
+  - npm install sass -g
 install:
-  - ls
   - cd build/grunt && npm install && grunt build
 script:
   - phantomjs --webdriver=4444
