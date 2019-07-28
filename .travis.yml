@@ -25,9 +25,8 @@ matrix:
 before_install:
   - npm install grunt-cli -g
 install:
-  - ll
-  - cd ./build/grunt && npm install
-  - cd ./build/grunt && grunt build
+  - ls
+  - cd build/grunt && npm install && grunt build
 script:
   - phantomjs --webdriver=4444
   - php vendor/bin/codecept run
