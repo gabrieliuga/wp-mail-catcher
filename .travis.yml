@@ -1,15 +1,12 @@
+sudo: required
 language: php
+branches:
+  only:
+    - codeception
 notifications:
   email:
     on_success: never
     on_failure: change
-branches:
-  only:
-    - codeception
-cache:
-  directories:
-    - vendor
-    - $HOME/.composer/cache
 matrix:
   include:
     - php: 7.1
@@ -22,15 +19,89 @@ matrix:
       env: WP_VERSION=latest
     - php: 5.6
       env: WP_VERSION=trunk
+services:
+  - mysql
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache/files
+addons:
+  apt:
+    packages:
+      # required by WordPress
+      - libjpeg-dev
+      - libpng12-dev
+      - php5-fpm
+      - php5-mysql
+      - nginx
+  hosts:
+    - wordpress.local
+env:
+  global:
+    - WP_FOLDER="/tmp/wordpress"
+    - WP_URL="http://wordpress.local"
+    - WP_DOMAIN="wordpress.local"
+    - DB_NAME="test"
+    - TEST_DB_NAME="wordpress_testing"
+    - WP_TABLE_PREFIX="wp_"
+    - WP_ADMIN_USERNAME="test"
+    - WP_ADMIN_PASSWORD="test"
+  matrix:
+    - WP_VERSION=latest
+    - WP_VERSION=nightly
 before_install:
-  - npm install grunt-cli -g
-  - npm install sass -g
+  # create the databases that will be used in the tests
+  - mysql -e "create database IF NOT EXISTS $DB_NAME;" -uroot
+  - mysql -e "create database IF NOT EXISTS $TEST_DB_NAME;" -uroot
+  # set up folders
+  - mkdir -p $WP_FOLDER
+  - mkdir tools
+  # install wp-cli in the `tools` folder
+  - wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P $(pwd)/tools/
+  - chmod +x tools/wp-cli.phar && mv tools/wp-cli.phar tools/wp
+  # append the `tools` folder to the PATH
+  - export PATH=$PATH:$(pwd)/tools
+  # prepend the `vendor/bin` folder the PATH
+  - export PATH=vendor/bin:$PATH
 install:
-  - npm install $TRAVIS_BUILD_DIR/build/grunt
-  - echo $TRAVIS_BUILD_DIR
-  - cd $TRAVIS_BUILD_DIR/build/grunt && grunt build
+  - composer install --prefer-dist
+
+  # install WordPress in the `wordpress` folder
+  - cd $WP_FOLDER
+  - wp core download --version=$WP_VERSION
+  - wp config create --dbname="$DB_NAME" --dbuser="root" --dbpass="" --dbhost="127.0.0.1" --dbprefix="$WP_TABLE_PREFIX"
+  - wp core install --url="$WP_URL" --base="/" --title="Test" --admin_user="$WP_ADMIN_USERNAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="admin@$WP_DOMAIN" --skip-email
+
+  # flush rewrite rules to use pretty permalinks
+  - wp rewrite structure '/%postname%/' --hard
+
+  # export a dump of the just installed database to the _data folder
+  - wp db export $TRAVIS_BUILD_DIR/tests/_data/dump.sql
+
+  # get back to the build folder
   - cd $TRAVIS_BUILD_DIR
-  - composer install
+
+  # copy the Nginx configuration file to the default site and replace the path and domain
+  - sudo cp build/travis-nginx-conf /etc/nginx/sites-available/$WP_DOMAIN
+  - sudo sed -e "s?%WP_FOLDER%?$WP_FOLDER?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
+  - sudo sed -e "s?%WP_DOMAIN%?$WP_DOMAIN?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
+
+  # enable the WordPress installation
+  - sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
+
+  # install npm and build grunt
+#  - npm install $TRAVIS_BUILD_DIR/build/grunt
+#  - grunt build --gruntfile $TRAVIS_BUILD_DIR/build/grunt/Gruntfile.js
+before_script:
+  - sudo service php5-fpm restart
+  - sudo service nginx restart
+
+  # symbolically link the plugin root folder to the WordPress installation folder
+  # if you are using wp-browser use the Symlinker extension and skip this
+  - ln -s $TRAVIS_BUILD_DIR $WP_FOLDER/wp-content/plugins
+
+  # build Codeception modules
+  - codecept build
 script:
   - phantomjs --webdriver=4444 &
-  - php vendor/bin/codecept run
+  - codecept run
