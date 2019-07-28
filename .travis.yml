@@ -31,8 +31,6 @@ addons:
       # required by WordPress
       - libjpeg-dev
       - libpng12-dev
-      - php5-fpm
-      - php5-mysql
       - nginx
   hosts:
     - wordpress.local
@@ -93,7 +91,6 @@ install:
 #  - npm install $TRAVIS_BUILD_DIR/build/grunt
 #  - grunt build --gruntfile $TRAVIS_BUILD_DIR/build/grunt/Gruntfile.js
 before_script:
-  - sudo service php5-fpm restart
   - sudo service nginx restart
 
   # symbolically link the plugin root folder to the WordPress installation folder
