@@ -28,7 +28,7 @@ before_install:
 install:
   - npm install build/grunt
   - ls
-  - grunt build --gruntfile build/grunt/Gruntfile.js
+  - grunt build --gruntfile ./build/grunt/Gruntfile.js
   - composer install
 script:
   - phantomjs --webdriver=4444 &
