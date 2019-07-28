@@ -101,4 +101,4 @@ before_script:
   - codecept build
 script:
   - phantomjs --webdriver=4444 &
-  - codecept run
+  - codecept acceptance run --debug -v
