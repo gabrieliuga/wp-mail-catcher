@@ -101,5 +101,6 @@ before_script:
   - codecept build
 script:
   - phantomjs --webdriver=4444 &
+  - ls $WP_FOLDER
   - wget http://wordpress.local && cat index.html
   - codecept run acceptance --debug -v
