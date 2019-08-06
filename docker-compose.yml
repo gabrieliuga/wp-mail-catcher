@@ -1,0 +1,48 @@
+version: '3'
+services:
+  wordpress:
+    networks:
+      - appnet
+    image: wordpress
+    restart: always
+    volumes:
+      - .:/var/www/html/wp-content/plugins/wp-mail-catcher
+    ports:
+      - 80:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${TEST_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${TEST_SITE_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${TEST_SITE_DB_NAME}
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - appnet
+    environment:
+      MYSQL_DATABASE: ${TEST_SITE_DB_NAME}
+      MYSQL_USER: ${TEST_DB_USER}
+      MYSQL_PASSWORD: ${TEST_SITE_DB_PASSWORD}
+  chrome:
+    image: selenium/standalone-chrome
+    networks:
+      - appnet
+  codecept:
+    networks:
+      - appnet
+    build: .
+    volumes:
+     - .:/project
+    depends_on:
+     - wordpress
+     - db
+     - chrome
+    environment:
+      TEST_SITE_DB_HOST: db
+      TEST_DB_HOST: db
+      TEST_SITE_WP_URL: wordpress
+      TEST_SITE_WP_DOMAIN: wordpress
+networks:
+  appnet:
